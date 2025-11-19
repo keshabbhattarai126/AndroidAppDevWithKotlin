@@ -2,4 +2,6 @@
     <string name="app_name">AI37B</string>
     <string name="title_activity_profile">ProfileActivity</string>
     <string name="title_activity_dashboard">DashboardActivity</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="title_activity_registration">RegistrationActivity</string>
 </resources>

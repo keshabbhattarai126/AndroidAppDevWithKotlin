@@ -39,12 +39,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ai37b.R.drawable.baseline_keyboard_arrow_down_24
 import com.example.ai37b.ui.theme.AI37BTheme
+import com.example.ai37b.ui.theme.BlackCust
+import com.example.ai37b.ui.theme.White
 
 class ProfileActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            ProfileBody()
 
         }
     }
@@ -66,7 +69,7 @@ fun ProfileBody(){
                 Text("keshab126",style= TextStyle(
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.Black
+                    color = BlackCust
                 ))
                 Icon(
                     painter = painterResource(R.drawable.baseline_more_horiz_24),
