@@ -1,13 +1,18 @@
 package com.example.ai37b
 
+import android.app.Activity
+import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.os.Bundle
+import android.widget.HorizontalScrollView
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,26 +23,37 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
@@ -51,6 +67,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.toSize
 import com.example.ai37b.ui.theme.AI37BTheme
 import com.example.ai37b.ui.theme.Blue
 import com.example.ai37b.ui.theme.Green
@@ -70,7 +87,7 @@ class RegistrationActivity : ComponentActivity() {
 }
 
 @Composable
-fun RegisterBody(){
+fun RegisterBody() {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var visibility by remember { mutableStateOf(false) }
@@ -88,16 +105,31 @@ fun RegisterBody(){
     var day = calendar.get(Calendar.DAY_OF_MONTH)
 
     var datePicker = DatePickerDialog(
-        context,{
-                _,y,m,d-> selectedDate = "$d/${m+1}/$y"
+        context, { _, y, m, d ->
+            selectedDate = "$d/${m + 1}/$y"
 
-        },year,month,day
+        }, year, month, day
     )
+
+    var expanded by remember { mutableStateOf(false) }
+    var selectedOptionText by remember { mutableStateOf("Select Option") }
+    val options = listOf("Male", "female", "other")
+    var textFieldSize by remember { mutableStateOf(Size.Zero) }
+
+    var rememberMe by remember { mutableStateOf(false) }
+    var showDialog by remember { mutableStateOf(false) }
+
+    val snackbarHostState = remember{ SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
+
+    val activity = context as Activity
+
+
 
 
 //    var email : String = ""
 
-    Scaffold { padding ->
+    Scaffold(snackbarHost = { SnackbarHost(hostState = snackbarHostState) }) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -151,7 +183,7 @@ fun RegisterBody(){
                 shape = RoundedCornerShape(12.dp),
                 enabled = false,
                 modifier = Modifier
-                    .fillMaxWidth().clickable{
+                    .fillMaxWidth().clickable {
                         datePicker.show()
                     }
                     .padding(horizontal = 15.dp),
@@ -208,13 +240,13 @@ fun RegisterBody(){
             Spacer(modifier = Modifier.height(20.dp))
 
 
-            Row (
+            Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
-            ){
+            ) {
                 Checkbox(
                     checked = terms,
-                    onCheckedChange = {data->
+                    onCheckedChange = { data ->
                         terms = data
                     },
                     colors = CheckboxDefaults.colors(
@@ -224,6 +256,62 @@ fun RegisterBody(){
                 )
                 Text("I agree to terms & Conditions")
             }
+
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                OutlinedTextField(
+                    value = selectedOptionText,
+                    onValueChange = {},
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .onGloballyPositioned { coordinates ->
+                            // capture the size of the TextField
+                            textFieldSize = coordinates.size.toSize()
+                        }
+                        .clickable { expanded = true },
+                    placeholder = { Text("Select Option") },
+                    enabled = false, // prevent manual typing
+                    trailingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.ArrowDropDown,
+                            contentDescription = null
+                        )
+                    }
+                )
+
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false },
+                    modifier = Modifier
+                        .width(with(LocalDensity.current) { textFieldSize.width.toDp() })
+                ) {
+                    options.forEach { option ->
+                        DropdownMenuItem(
+                            text = { Text(option) },
+                            onClick = {
+                                selectedOptionText = option
+                                expanded = false
+                            }
+                        )
+                    }
+                }
+            }
+
+            Button(onClick = {
+                Toast.makeText(context,"This is toast message", Toast.LENGTH_SHORT).show()
+            },
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray,
+                    contentColor = Color.Black)) {
+                Text("Show toast message")
+            }
+
+
+
 
             Button(
                 onClick = {},
@@ -241,19 +329,52 @@ fun RegisterBody(){
                 Text("Sign Up")
             }
 
-            Text(buildAnnotatedString {
-                append("Already have an account?")
+            Text(
+                buildAnnotatedString {
+                    append("Already have an account?")
 
-                withStyle(style = SpanStyle(color = Blue)){
-                    append(" Sign In")
-                }
-            }, modifier = Modifier.padding(horizontal = 15.dp),
+                    withStyle(style = SpanStyle(color = Blue)) {
+                        append(" Sign In")
+                    }
+                }, modifier = Modifier.padding(horizontal = 15.dp),
                 style = TextStyle(fontSize = 16.sp)
             )
+
+                // Trigger to show the dialog
+                Button(onClick = { showDialog = true }) {
+                    Text("Show Alert Dialog")
+                }
+
+                if (showDialog) {
+                    AlertDialog(
+                        onDismissRequest = {
+                            showDialog = false
+                        }, // dismiss when clicked outside
+                        confirmButton = {
+                            Button(onClick = {
+                                // Confirm action
+                                showDialog = false
+                            }) {
+                                Text("OK")
+                            }
+                        },
+                        dismissButton = {
+                            Button(onClick = {
+                                // Cancel action
+                                showDialog = false
+                            }) {
+                                Text("Cancel")
+                            }
+                        },
+                        title = { Text(text = "Alert Title") },
+                        text = { Text("This is an alert dialog message.") }
+                    )
+
+            }
         }
     }
-
 }
+
 
 @Preview
 @Composable

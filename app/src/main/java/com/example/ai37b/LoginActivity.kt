@@ -1,11 +1,16 @@
 package com.example.ai37b
 
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -38,6 +43,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.integerArrayResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
@@ -76,6 +83,15 @@ fun LoginBody(){
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var visibility by remember { mutableStateOf(false) }
+
+    var context = LocalContext.current
+    val activity = context as Activity
+    val sharedPreferences = context.getSharedPreferences("User", Context.MODE_PRIVATE)
+    val localEmail :String? = sharedPreferences.getString("email","")
+    val localPassword :String? = sharedPreferences.getString("password","")
+
+
+
     Scaffold() { padding ->
         Column(modifier= Modifier.fillMaxSize()
             .padding(paddingValues = padding)
@@ -214,17 +230,31 @@ fun LoginBody(){
             }
 
             Button(
-                onClick = {},
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Blue
-                ),
-                elevation = ButtonDefaults.buttonElevation(
-                    defaultElevation = 6.dp
-                ),
-                shape = RoundedCornerShape(12.dp),
+                onClick = {
+                    if(localEmail == email && localPassword == password){
+                        val intent = Intent(context,
+                            DashboardActivity::class.java)
+
+                        context.startActivity(intent)
+                        activity.finish()
+
+                    }else{
+                        Toast.makeText(
+                            context,
+                            "invalid details",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
+                },
                 modifier = Modifier
-                    .fillMaxWidth().height(100.dp)
-                    .padding(horizontal = 15.dp, vertical = 20.dp),
+                    .fillMaxWidth()
+                    .padding(horizontal = 15.dp)
+                    .height(60.dp),
+                elevation = ButtonDefaults.buttonElevation(
+                    defaultElevation = 15.dp
+                ),
+                shape = RoundedCornerShape(10.dp)
             ) {
                 Text("Log In")
             }
@@ -235,7 +265,12 @@ fun LoginBody(){
                 withStyle(style = SpanStyle(color = Blue)){
                     append(" Sign Up")
                 }
-            }, modifier = Modifier.padding(horizontal = 15.dp),
+            }, modifier = Modifier.padding(horizontal = 15.dp).clickable{
+                val intent = Intent(
+                    context, RegistrationActivity::class.java)
+                context.startActivity(intent)
+                activity.finish()
+            },
                 style = TextStyle(fontSize = 16.sp)
             )
 
