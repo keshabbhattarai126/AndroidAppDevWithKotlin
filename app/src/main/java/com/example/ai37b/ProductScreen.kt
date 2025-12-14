@@ -1,36 +1,24 @@
 package com.example.ai37b
 
+import android.app.Activity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.tooling.preview.Preview
+import com.example.ai37b.model.ProductModel
 import com.example.ai37b.repository.ProductImpl
-import com.example.ai37b.ui.theme.AI37BTheme
 import com.example.ai37b.ui.theme.Blue
 import com.example.ai37b.ui.theme.PurpleGrey80
 import com.example.ai37b.viewmodel.ProductViewModel
@@ -46,31 +34,28 @@ class ProductScreen : ComponentActivity() {
 }
 
 @Composable
-fun ProductScreenBody(){
+fun ProductScreenBody() {
+    var productId by remember { mutableStateOf("") }
     var productName by remember { mutableStateOf("") }
     var productPrice by remember { mutableStateOf("") }
     var productQuantity by remember { mutableStateOf("") }
-    var productImage by remember { mutableStateOf("") }
     var productDescription by remember { mutableStateOf("") }
 
-    val ProductViewModel = remember { ProductViewModel(ProductImpl()) }
+    val productViewModel = remember { ProductViewModel(ProductImpl()) }
 
-    Scaffold(){padding ->
+    val context = LocalContext.current
+    val activity = context as Activity
+
+    Scaffold { padding ->
         Column(modifier = Modifier.fillMaxSize().padding(padding)) {
-            Text("Product Screen")
-            Spacer(modifier = Modifier.height(20.dp))
+            Text("Product Screen", modifier = Modifier.padding(16.dp))
+
             OutlinedTextField(
-                value = productName,
-                onValueChange = { data ->
-                    productName = data
-                },
+                value = productId,
+                onValueChange = { productId = it },
                 shape = RoundedCornerShape(12.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 15.dp),
-                placeholder = {
-                    Text("Enter Product Name")
-                },
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp),
+                placeholder = { Text("Enter Product ID") },
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = PurpleGrey80,
                     unfocusedContainerColor = PurpleGrey80,
@@ -78,20 +63,32 @@ fun ProductScreenBody(){
                     unfocusedIndicatorColor = Color.Transparent
                 )
             )
-            Spacer(modifier = Modifier.height(20.dp))
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            OutlinedTextField(
+                value = productName,
+                onValueChange = { productName = it },
+                shape = RoundedCornerShape(12.dp),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp),
+                placeholder = { Text("Enter Product Name") },
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = PurpleGrey80,
+                    unfocusedContainerColor = PurpleGrey80,
+                    focusedIndicatorColor = Blue,
+                    unfocusedIndicatorColor = Color.Transparent
+                )
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
 
             OutlinedTextField(
                 value = productPrice,
-                onValueChange = { data ->
-                    productPrice = data
-                },
+                onValueChange = { productPrice = it },
                 shape = RoundedCornerShape(12.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 15.dp),
-                placeholder = {
-                    Text("Enter Product Price")
-                },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp),
+                placeholder = { Text("Enter Product Price") },
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = PurpleGrey80,
                     unfocusedContainerColor = PurpleGrey80,
@@ -99,20 +96,16 @@ fun ProductScreenBody(){
                     unfocusedIndicatorColor = Color.Transparent
                 )
             )
-            Spacer(modifier = Modifier.height(20.dp))
+
+            Spacer(modifier = Modifier.height(10.dp))
 
             OutlinedTextField(
                 value = productQuantity,
-                onValueChange = { data ->
-                    productQuantity = data
-                },
+                onValueChange = { productQuantity = it },
                 shape = RoundedCornerShape(12.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 15.dp),
-                placeholder = {
-                    Text("Enter Product Quantity")
-                },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp),
+                placeholder = { Text("Enter Product Quantity") },
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = PurpleGrey80,
                     unfocusedContainerColor = PurpleGrey80,
@@ -120,20 +113,15 @@ fun ProductScreenBody(){
                     unfocusedIndicatorColor = Color.Transparent
                 )
             )
-            Spacer(modifier = Modifier.height(20.dp))
+
+            Spacer(modifier = Modifier.height(10.dp))
 
             OutlinedTextField(
                 value = productDescription,
-                onValueChange = { data ->
-                    productDescription = data
-                },
+                onValueChange = { productDescription = it },
                 shape = RoundedCornerShape(12.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 15.dp),
-                placeholder = {
-                    Text("Enter Product Description")
-                },
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp),
+                placeholder = { Text("Enter Product Description") },
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = PurpleGrey80,
                     unfocusedContainerColor = PurpleGrey80,
@@ -141,82 +129,87 @@ fun ProductScreenBody(){
                     unfocusedIndicatorColor = Color.Transparent
                 )
             )
+
             Spacer(modifier = Modifier.height(20.dp))
 
             Button(
                 onClick = {
-                    ProductViewModel.addProduct(productName,productPrice,productQuantity,productImage,productDescription){success,message ->{
-                        if(success){
-                            var model = ProductModel(
-                            productId
-                            )
-
-                        }
+                    if (productId.isEmpty()) {
+                        Toast.makeText(context, "Enter Product ID", Toast.LENGTH_SHORT).show()
+                        return@Button
                     }
+                    val product = ProductModel(
+                        productName = productName,
+                        productPrice = productPrice,
+                        productQuantity = productQuantity,
+                        productImage = "",
+                        productDescription = productDescription
+                    )
+                    productViewModel.addProduct(productId, product) { success, message ->
+                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                     }
-
-
                 },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 15.dp)
-                    .height(60.dp),
-                elevation = ButtonDefaults.buttonElevation(
-                    defaultElevation = 15.dp
-                ),
-                shape = RoundedCornerShape(10.dp)
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp).height(60.dp),
+                shape = RoundedCornerShape(12.dp)
             ) {
                 Text("Add Product")
             }
-            Spacer(modifier = Modifier.height(20.dp))
+
+            Spacer(modifier = Modifier.height(10.dp))
 
             Button(
                 onClick = {
-
-
+                    if (productId.isEmpty()) {
+                        Toast.makeText(context, "Enter Product ID to edit", Toast.LENGTH_SHORT).show()
+                        return@Button
+                    }
+                    val updatedProduct = ProductModel(
+                        productName = productName,
+                        productPrice = productPrice,
+                        productQuantity = productQuantity,
+                        productImage = "",
+                        productDescription = productDescription
+                    )
+                    productViewModel.editProduct(productId, updatedProduct) { success, message ->
+                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                    }
                 },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 15.dp)
-                    .height(60.dp),
-                elevation = ButtonDefaults.buttonElevation(
-                    defaultElevation = 15.dp
-                ),
-                shape = RoundedCornerShape(10.dp)
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp).height(60.dp),
+                shape = RoundedCornerShape(12.dp)
             ) {
                 Text("Edit Product")
             }
-            Spacer(modifier = Modifier.height(20.dp))
+
+            Spacer(modifier = Modifier.height(10.dp))
 
             Button(
                 onClick = {
-
-
+                    if (productId.isEmpty()) {
+                        Toast.makeText(context, "Enter Product ID to delete", Toast.LENGTH_SHORT).show()
+                        return@Button
+                    }
+                    val product = ProductModel(
+                        productName = productName,
+                        productPrice = productPrice,
+                        productQuantity = productQuantity,
+                        productImage = "",
+                        productDescription = productDescription
+                    )
+                    productViewModel.deleteProduct(productId, product) { success, message ->
+                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                    }
                 },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 15.dp)
-                    .height(60.dp),
-                elevation = ButtonDefaults.buttonElevation(
-                    defaultElevation = 15.dp
-                ),
-                shape = RoundedCornerShape(10.dp)
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp).height(60.dp),
+                shape = RoundedCornerShape(12.dp)
             ) {
                 Text("Delete Product")
             }
-            Spacer(modifier = Modifier.height(20.dp))
-
-
         }
-
-
     }
-
 }
-
 
 @Preview(showBackground = true)
 @Composable
-fun ProductScrenPreview() {
+fun ProductScreenPreview() {
     ProductScreenBody()
 }
