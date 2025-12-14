@@ -58,6 +58,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.ai37b.repository.UserRepoImpl
 import com.example.ai37b.ui.theme.AI37BTheme
 import com.example.ai37b.ui.theme.BlackCust
 import com.example.ai37b.ui.theme.Blue
@@ -66,6 +67,7 @@ import com.example.ai37b.ui.theme.Purple40
 import com.example.ai37b.ui.theme.PurpleGrey80
 import com.example.ai37b.ui.theme.White2
 import com.example.ai37b.ui.theme.WhiteCust
+import com.example.ai37b.viewmodel.UserViewModel
 
 class LoginActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -83,6 +85,7 @@ fun LoginBody(){
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var visibility by remember { mutableStateOf(false) }
+    val userViewModel = remember { UserViewModel(UserRepoImpl()) }
 
     var context = LocalContext.current
     val activity = context as Activity
@@ -231,21 +234,22 @@ fun LoginBody(){
 
             Button(
                 onClick = {
-                    if(localEmail == email && localPassword == password){
-                        val intent = Intent(context,
-                            DashboardActivity::class.java)
+                    if (email.isNotEmpty() && password.isNotEmpty()) {
+                        userViewModel.login(email, password) { success, message ->
 
-                        context.startActivity(intent)
-                        activity.finish()
+                            if (success) {
+                                Toast.makeText(context, "Login successful", Toast.LENGTH_SHORT).show()
+                                val intent = Intent(context, DashboardActivity::class.java)
+                                context.startActivity(intent)
+                                (context as Activity).finish()
+                            } else {
+                                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                            }
+                        }
 
-                    }else{
-                        Toast.makeText(
-                            context,
-                            "invalid details",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                    } else {
+                        Toast.makeText(context, "Enter email and password", Toast.LENGTH_SHORT).show()
                     }
-
                 },
                 modifier = Modifier
                     .fillMaxWidth()

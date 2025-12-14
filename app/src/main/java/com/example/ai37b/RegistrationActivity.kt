@@ -68,11 +68,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
+import com.example.ai37b.model.UserModel
+import com.example.ai37b.repository.UserRepoImpl
 import com.example.ai37b.ui.theme.AI37BTheme
 import com.example.ai37b.ui.theme.Blue
 import com.example.ai37b.ui.theme.Green
 import com.example.ai37b.ui.theme.PurpleGrey80
 import com.example.ai37b.ui.theme.White
+import com.example.ai37b.viewmodel.UserViewModel
 import java.util.Calendar
 
 class RegistrationActivity : ComponentActivity() {
@@ -88,8 +91,14 @@ class RegistrationActivity : ComponentActivity() {
 
 @Composable
 fun RegisterBody() {
+
+    val userViewModel = remember { UserViewModel(UserRepoImpl()) }
     var email by remember { mutableStateOf("") }
+    var firstName by remember { mutableStateOf("") }
+    var lastName by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var gender by remember { mutableStateOf("") }
+
     var visibility by remember { mutableStateOf(false) }
     var terms by remember { mutableStateOf(false) }
 
@@ -97,6 +106,7 @@ fun RegisterBody() {
     var selectedDate by remember { mutableStateOf("") }
 
     val context = LocalContext.current
+
 
     var calendar = Calendar.getInstance()
 
@@ -193,6 +203,69 @@ fun RegisterBody() {
                 colors = TextFieldDefaults.colors(
                     disabledContainerColor = PurpleGrey80,
                     disabledIndicatorColor = Color.Transparent,
+                    focusedContainerColor = PurpleGrey80,
+                    unfocusedContainerColor = PurpleGrey80,
+                    focusedIndicatorColor = Blue,
+                    unfocusedIndicatorColor = Color.Transparent
+                )
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+
+            OutlinedTextField(
+                value = firstName,
+                onValueChange = { data -> firstName = data
+                },
+                shape = RoundedCornerShape(12.dp),
+
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 15.dp),
+                placeholder = {
+                    Text("first name")
+                },
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = PurpleGrey80,
+                    unfocusedContainerColor = PurpleGrey80,
+                    focusedIndicatorColor = Blue,
+                    unfocusedIndicatorColor = Color.Transparent
+                )
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+
+            OutlinedTextField(
+                value = lastName,
+                onValueChange = { data -> lastName = data
+                },
+                shape = RoundedCornerShape(12.dp),
+
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 15.dp),
+                placeholder = {
+                    Text("last name")
+                },
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = PurpleGrey80,
+                    unfocusedContainerColor = PurpleGrey80,
+                    focusedIndicatorColor = Blue,
+                    unfocusedIndicatorColor = Color.Transparent
+                )
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+
+            OutlinedTextField(
+                value = gender,
+                onValueChange = { data -> gender = data
+                },
+                shape = RoundedCornerShape(12.dp),
+
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 15.dp),
+                placeholder = {
+                    Text("gender")
+                },
+                colors = TextFieldDefaults.colors(
                     focusedContainerColor = PurpleGrey80,
                     unfocusedContainerColor = PurpleGrey80,
                     focusedIndicatorColor = Blue,
@@ -314,7 +387,39 @@ fun RegisterBody() {
 
 
             Button(
-                onClick = {},
+                onClick = {
+                    if (!terms){
+                        Toast.makeText(context,"Please accept terms and conditions",Toast.LENGTH_SHORT).show()
+
+                    }else{
+                        userViewModel.register(email,password){success,message,userId ->
+                            if(success){
+                                var model = UserModel(
+                                    userId = userId,
+                                    firstName = firstName,
+                                    lastName = lastName,
+                                    email = email,
+                                    gender = gender,
+                                    dob = selectedDate
+
+                                )
+                                userViewModel.addUserToDatabase(userId,model){success,message ->
+                                    if(success){
+                                        Toast.makeText(context,message,Toast.LENGTH_SHORT).show()
+                                        activity.finish()
+
+                                    }else{
+                                        Toast.makeText(context,message,Toast.LENGTH_SHORT).show()
+                                    }
+                                }
+                            }else{
+                                Toast.makeText(context,message,Toast.LENGTH_SHORT).show()
+
+                            }
+                        }
+
+                    }
+                },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Blue
                 ),
