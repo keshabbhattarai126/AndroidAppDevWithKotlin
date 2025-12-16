@@ -1,32 +1,52 @@
 package com.example.ai37b.viewmodel
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.ai37b.model.ProductModel
 import com.example.ai37b.repository.ProductRepo
 
 class ProductViewModel(val repo: ProductRepo) : ViewModel() {
-    fun addProduct(
-        productId: String, model: ProductModel,
-        callback: (Boolean, String) -> Unit
-    ){
-        repo.addProduct(productId,model,callback)
+   fun addProduct(productId: String, model: ProductModel, callback: (Boolean, String) -> Unit) {
+        repo.addProduct(productId, model, callback)
     }
 
-    fun editProduct(productId: String,model: ProductModel,callback: (Boolean, String) -> Unit){
-        repo.editProduct(productId,model,callback)
+
+    fun updateProduct(model: ProductModel, callback: (Boolean, String) -> Unit) {
+        repo.updateProduct(model, callback)
     }
 
-    fun deleteProduct(productId: String,model: ProductModel,callback: (Boolean, String) -> Unit){
-        repo.deleteProduct(productId,model,callback)
+    fun deleteProduct(productId: String, callback: (Boolean, String) -> Unit) {
+        repo.deleteProduct(productId, callback)
     }
 
-    fun getProduct(productId: String,callback: (Boolean, String, ProductModel?) -> Unit){
-        repo.getProduct(productId,callback)
+    private val _products = MutableLiveData<ProductModel?>()
+    val products: MutableLiveData<ProductModel?> get() = _products
+
+
+    private val _allProducts = MutableLiveData<List<ProductModel>?>()
+    val allProducts: MutableLiveData<List<ProductModel>?> get() = _allProducts
+
+    fun getProductById(productId: String) {
+        repo.getProductById(productId) { success, msg, data ->
+            if (success) {
+                _products.postValue(data)
+            } else {
+                _products.postValue(data)
+
+            }
+        }
     }
 
-    fun getAllProduct(productId: String,callback: (Boolean, String, List<ProductModel>) -> Unit){
-        repo.getAllProduct(productId,callback)
+    fun getAllProduct() {
+        repo.getAllProduct { success, msg, data ->
+            if (success) {
+                _allProducts.postValue(data)
+            } else {
+                _allProducts.postValue(data)
 
+            }
+        }
     }
+
 
 }

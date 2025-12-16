@@ -1,22 +1,21 @@
 package com.example.ai37b.model
 
 data class ProductModel(
-    val productId: String = "",
-    val productName: String = "",
-    val productPrice: String = "",
-    val productQuantity: String = "",
-    val productImage: String = "",
-    val productDescription: String = ""
+    var productId : String = "",
+    var name : String = "",
+    var price : Double = 0.0,
+    var description : String = "",
+    var categoryId : String = ""
 
 ) {
     fun toMap(): Map<String, Any?> {
         return mapOf(
-            "productId" to productId,
-            "productName" to productName,
-            "productPrice" to productPrice,
-            "productQuantity" to productQuantity,
-            "productImage" to productImage,
-            "productDescription" to productDescription,
+            "name" to name,
+            "price" to price,
+            "description" to description,
+            "categoryId" to categoryId
         )
+
+
     }
 }

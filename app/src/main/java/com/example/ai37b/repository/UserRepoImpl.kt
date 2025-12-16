@@ -23,7 +23,7 @@ class UserRepoImpl: UserRepo {
         auth.signInWithEmailAndPassword(email,password)
             .addOnCompleteListener {
                 if(it.isSuccessful){
-                    // Typo corrected: "sucesss" -> "success"
+
                     callback(true,"login success")
                 }
                 else{

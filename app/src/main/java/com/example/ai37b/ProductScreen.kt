@@ -18,10 +18,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.ai37b.model.ProductModel
-import com.example.ai37b.repository.ProductImpl
 import com.example.ai37b.ui.theme.Blue
 import com.example.ai37b.ui.theme.PurpleGrey80
-import com.example.ai37b.viewmodel.ProductViewModel
+//import com.example.ai37b.viewmodel.ProductViewModel
 
 class ProductScreen : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,7 +40,7 @@ fun ProductScreenBody() {
     var productQuantity by remember { mutableStateOf("") }
     var productDescription by remember { mutableStateOf("") }
 
-    val productViewModel = remember { ProductViewModel(ProductImpl()) }
+//    val productViewModel = remember { ProductViewModel(ProductImpl()) }
 
     val context = LocalContext.current
     val activity = context as Activity
@@ -134,20 +133,19 @@ fun ProductScreenBody() {
 
             Button(
                 onClick = {
-                    if (productId.isEmpty()) {
-                        Toast.makeText(context, "Enter Product ID", Toast.LENGTH_SHORT).show()
-                        return@Button
-                    }
-                    val product = ProductModel(
-                        productName = productName,
-                        productPrice = productPrice,
-                        productQuantity = productQuantity,
-                        productImage = "",
-                        productDescription = productDescription
-                    )
-                    productViewModel.addProduct(productId, product) { success, message ->
-                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-                    }
+//                    if (productId.isEmpty()) {
+//                        Toast.makeText(context, "Enter Product ID", Toast.LENGTH_SHORT).show()
+//                    }
+//                    val product = ProductModel(
+//                        productName = productName,
+//                        productPrice = productPrice,
+//                        productQuantity = productQuantity,
+//                        productImage = "",
+//                        productDescription = productDescription
+//                    )
+//                    productViewModel.addProduct(productId, product) { success, message ->
+//                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+//                    }
                 },
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp).height(60.dp),
                 shape = RoundedCornerShape(12.dp)
@@ -159,20 +157,19 @@ fun ProductScreenBody() {
 
             Button(
                 onClick = {
-                    if (productId.isEmpty()) {
-                        Toast.makeText(context, "Enter Product ID to edit", Toast.LENGTH_SHORT).show()
-                        return@Button
-                    }
-                    val updatedProduct = ProductModel(
-                        productName = productName,
-                        productPrice = productPrice,
-                        productQuantity = productQuantity,
-                        productImage = "",
-                        productDescription = productDescription
-                    )
-                    productViewModel.editProduct(productId, updatedProduct) { success, message ->
-                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-                    }
+//                    if (productId.isEmpty()) {
+//                        Toast.makeText(context, "Enter Product ID to edit", Toast.LENGTH_SHORT).show()
+//                    }
+//                    val updatedProduct = ProductModel(
+//                        productName = productName,
+//                        productPrice = productPrice,
+//                        productQuantity = productQuantity,
+//                        productImage = "",
+//                        productDescription = productDescription
+//                    )
+//                    productViewModel.editProduct(productId, updatedProduct) { success, message ->
+//                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+//                    }
                 },
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp).height(60.dp),
                 shape = RoundedCornerShape(12.dp)
@@ -184,20 +181,7 @@ fun ProductScreenBody() {
 
             Button(
                 onClick = {
-                    if (productId.isEmpty()) {
-                        Toast.makeText(context, "Enter Product ID to delete", Toast.LENGTH_SHORT).show()
-                        return@Button
-                    }
-                    val product = ProductModel(
-                        productName = productName,
-                        productPrice = productPrice,
-                        productQuantity = productQuantity,
-                        productImage = "",
-                        productDescription = productDescription
-                    )
-                    productViewModel.deleteProduct(productId, product) { success, message ->
-                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-                    }
+
                 },
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp).height(60.dp),
                 shape = RoundedCornerShape(12.dp)
