@@ -28,6 +28,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -74,6 +75,13 @@ fun HomeScreen() {
         items(products.value!!.size) { index ->
             val data = products.value!![index]
 
+            var showDialog by remember { mutableStateOf(false) }
+
+            // Edit fields state
+            var editedName by remember { mutableStateOf(data.name) }
+            var editedPrice by remember { mutableStateOf(data.price.toString()) }
+            var editedDescription by remember { mutableStateOf(data.description) }
+
             Card(
                 shape = RoundedCornerShape(12.dp),
                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
@@ -82,7 +90,6 @@ fun HomeScreen() {
                     .fillMaxWidth()
                     .padding(horizontal = 12.dp, vertical = 6.dp)
             ) {
-
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -105,6 +112,9 @@ fun HomeScreen() {
 
                     Row {
                         IconButton(onClick = {
+                            editedName = data.name
+                            editedPrice = data.price.toString()
+                            editedDescription = data.description
                             showDialog = true
                         }) {
                             Icon(Icons.Default.Edit, contentDescription = "Edit")
@@ -122,32 +132,54 @@ fun HomeScreen() {
                 }
             }
 
-
             if (showDialog) {
                 AlertDialog(
-                    onDismissRequest = {
-                        showDialog = false
-                    },
+                    onDismissRequest = { showDialog = false },
                     title = {
-                        Text("Edit Product")
+                        Text(text = "Edit Product")
                     },
                     text = {
                         Column {
-                            Text("Product Name: ${data.name}")
+                            OutlinedTextField(
+                                value = editedName,
+                                onValueChange = { editedName = it },
+                                label = { Text("Product Name") },
+                                modifier = Modifier.fillMaxWidth()
+                            )
+
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                            OutlinedTextField(
+                                value = editedPrice,
+                                onValueChange = { editedPrice = it },
+                                label = { Text("Product Price") },
+                                modifier = Modifier.fillMaxWidth()
+                            )
+
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                            OutlinedTextField(
+                                value = editedDescription,
+                                onValueChange = { editedDescription = it },
+                                label = { Text("Product Description") },
+                                modifier = Modifier.fillMaxWidth()
+                            )
                         }
                     },
                     confirmButton = {
                         Button(onClick = {
+
+
                             showDialog = false
                         }) {
-                            Text("OK")
+                            Text("Confirm")
                         }
                     },
                     dismissButton = {
-                        Button(onClick = {
+                        OutlinedButton(onClick = {
                             showDialog = false
                         }) {
-                            Text("Cancel")
+                            Text("Discard")
                         }
                     }
                 )
